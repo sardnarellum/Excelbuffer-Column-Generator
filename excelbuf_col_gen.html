@@ -13,9 +13,9 @@
 	<body>
 		<div class="container-fluid">
 			<div class="page-header">
-  				<h1>
-  					C/AL-forráskód generálás Excel-bufferhez <small>mező-definíciók alapján</small>
-  				</h1>
+				<h1>
+					C/AL-forráskód generálás Excel-bufferhez <small>mező-definíciók alapján</small>
+				</h1>
 			</div>
 			<div class="col-md-4">
 				<div class="panel panel-primary">
@@ -27,14 +27,14 @@
 								<input type="text"
 									   class="form-control"
 									   placeholder="Add meg az Excel-buffer változó nevét."
-									   id="variable-name">
+									   id="variable-name" required>
 							</div>
 							<div class="form-group">
 								<label for="source">Exportálandó rekordváltozó neve</label>
 								<input type="text"
 									   class="form-control"
 									   placeholder="Add meg a rekordváltozó nevét, amiből kimenetet szeretnél készíteni."
-									   id="table-name">
+									   id="table-name" required>
 							</div>
 							<div class="form-group">
 								<label for="source">Forrás</label>
@@ -75,9 +75,9 @@
 										</label>
 										<label class="checkbox-inline">
 											<input type="checkbox" id="body-underline" aria-label="Header Underline"> Aláhúzott
-										</label>					
+										</label>          
 									</div>
-								</div>		
+								</div>    
 						</form>
 					</div>
 					<div class="panel-footer">
@@ -108,79 +108,79 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 		<script type="text/javascript">
 
-				function transform() {
-					var variableName = document.getElementById('variable-name').value;
-					var tableName = document.getElementById('table-name').value;
-					var lines = document.getElementById('source').value.split('\n');
+			function transform() {
+				var variableName = document.getElementById('variable-name').value;
+				var tableName = document.getElementById('table-name').value;
+				var lines = document.getElementById('source').value.split('\n');
 
-					var isNew = document.getElementById('nav2013p').checked ? true : false;
+				var isNew = document.getElementById('nav2013p').checked ? true : false;
 
-					var headerBold = document.getElementById('header-bold').checked ? 'TRUE' : 'FALSE';
-					var headerItalic = document.getElementById('header-italic').checked ? 'TRUE' : 'FALSE';
-					var headerUnderline = document.getElementById('header-underline').checked ? 'TRUE' : 'FALSE';
-					var bodyBold = document.getElementById('body-bold').checked ? 'TRUE' : 'FALSE';
-					var bodyItalic = document.getElementById('body-italic').checked ? 'TRUE' : 'FALSE';
-					var bodyUnderline = document.getElementById('body-underline').checked ? 'TRUE' : 'FALSE';
+				var headerBold = document.getElementById('header-bold').checked ? 'TRUE' : 'FALSE';
+				var headerItalic = document.getElementById('header-italic').checked ? 'TRUE' : 'FALSE';
+				var headerUnderline = document.getElementById('header-underline').checked ? 'TRUE' : 'FALSE';
+				var bodyBold = document.getElementById('body-bold').checked ? 'TRUE' : 'FALSE';
+				var bodyItalic = document.getElementById('body-italic').checked ? 'TRUE' : 'FALSE';
+				var bodyUnderline = document.getElementById('body-underline').checked ? 'TRUE' : 'FALSE';
 
-					var header = document.getElementById('result-header');
-					var body = document.getElementById('result-body');
+				var header = document.getElementById('result-header');
+				var body = document.getElementById('result-body');
 
-					header.value = '';
-					body.value = '';
+				header.value = '';
+				body.value = '';
 
-					for (var i = 1; i < lines.length; i++) {
-						var fields = lines[i].split('\t');
+				for (var i = 1; i < lines.length; i++) {
+					var fields = lines[i].split('\t');
 
-						header.value += (i == 1 ? '' : '\n')
-							+ variableName
-							+'.AddColumn(\"'
-							+ tableName
-							+ '\".FIELDCAPTION(\"'
-							+ (fields[2])
-							+ '\"), FALSE, \'\', ' + headerBold + ', '
-							+ headerItalic + ', ' + headerUnderline + ', \'\''
-							+ (isNew ? (', ' + variableName	+ '.\"Cell Type\"::Text);') : ');');
+					header.value += (i == 1 ? '' : '\n')
+						+ variableName
+						+'.AddColumn(\"'
+						+ tableName
+						+ '\".FIELDCAPTION(\"'
+						+ (fields[2])
+						+ '\"), FALSE, \'\', ' + headerBold + ', '
+						+ headerItalic + ', ' + headerUnderline + ', \'\''
+						+ (isNew ? (', ' + variableName + '.\"Cell Type\"::Text);') : ');');
 
 
-						var cellType;
+					var cellType;
 
-						switch (fields[3]) {
-							case 'Integer':
-							case 'BigInteger':
-							case 'Decimal':
-								cellType = 'Number';
-								break;
-							case 'Date':
-								cellType = 'Date';
-								break;
-							case 'Time':
-							case 'DateTime':
-								cellType = 'Time';
-								break;
-							default:
-								cellType = 'Text';
-						}
-
-						body.value += (i == 1 ? '' : '\n')
-							+ variableName
-							+'.AddColumn(\"'
-							+ (fields[2])
-							+ '\", FALSE, \'\', ' + bodyBold + ', '
-							+ bodyItalic + ', ' + bodyUnderline + ', \'\''
-							+ (isNew
-								? (', '
-									+ variableName
-									+ '.\"Cell Type\"::'
-									+ cellType
-									+ ');')
-								: ');');
+					switch (fields[3]) {
+						case 'Integer':
+						case 'BigInteger':
+						case 'Decimal':
+							cellType = 'Number';
+							break;
+						case 'Date':
+							cellType = 'Date';
+							break;
+						case 'Time':
+						case 'DateTime':
+							cellType = 'Time';
+							break;
+						default:
+							cellType = 'Text';
 					}
-				}
 
-				function reset() {
-					document.getElementById('setup').reset();
-					document.getElementById('results').reset();
+					body.value += (i == 1 ? '' : '\n')
+						+ variableName
+						+'.AddColumn(\"'
+						+ (fields[2])
+						+ '\", FALSE, \'\', ' + bodyBold + ', '
+						+ bodyItalic + ', ' + bodyUnderline + ', \'\''
+						+ (isNew
+							? (', '
+								+ variableName
+								+ '.\"Cell Type\"::'
+								+ cellType
+								+ ');')
+							: ');');
 				}
+			}
+
+			function reset() {
+				document.getElementById('setup').reset();
+				document.getElementById('results').reset();
+			}
 
 		</script>
 
