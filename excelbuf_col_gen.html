@@ -13,96 +13,83 @@
 	<body>
 		<div class="container">
 			<div class="page-header">
-				<h1>
+				<h2>
 					C/AL-forráskód generálás Excel-bufferhez <small>mező-definíciók alapján</small>
-				</h1>
+				</h2>
 			</div>
-			<div class="col-md-12">
-				<div class="panel panel-primary">
-					<div class="panel-heading">Beállítás</div>
-					<div class="panel-body">
-						<form id="setup">
-							<div class="form-group">
-								<label for="source">Excel-buffer változó neve</label>
-								<input type="text"
-									   class="form-control"
-									   placeholder="Add meg az Excel-buffer változó nevét."
-									   id="variable-name" required>
-							</div>
-							<div class="form-group">
-								<label for="source">Exportálandó rekordváltozó neve</label>
-								<input type="text"
-									   class="form-control"
-									   placeholder="Add meg a rekordváltozó nevét, amiből kimenetet szeretnél készíteni."
-									   id="table-name" required>
-							</div>
-							<div class="form-group">
-								<label for="source">Forrás</label>
-								<textarea class="form-control"
-										  placeholder="Másold ide a mezők definícióit."
-										  rows="5"
-										  id="source"></textarea>
-									<p class="help-block">Az Object Designerben válaszd ki a táblát, nyisd meg a Design-felületet és a mezőlista bal felső sarkába kattintva jelöld ki az összes sort, majd használd a <kbd><kbd>Ctrl</kbd> + <kbd>c</kbd></kbd> billentyűkombinációt.</p>
-							</div>
-							<div class="checkbox">
-								<label>
-									<input type="checkbox" id="nav2013p" aria-label="NAV2013+"> NAV2013+
-								</label>
-								<p class="help-block">Pipáld be, ha NAV2013, vagy későbbi verzióban szeretnéd az eredményt használni.</p>
-							</div>
-								<div class="panel panel-info">
-									<div class="panel-heading">Fejléc stílus</div>
-									<div class="panel-body">
-										<label class="checkbox-inline">
-											<input type="checkbox" id="header-bold"> Félkövér
-										</label>
-										<label class="checkbox-inline">
-											<input type="checkbox" id="header-italic"> Dőlt
-										</label>
-										<label class="checkbox-inline">
-											<input type="checkbox" id="header-underline"> Aláhúzott
-										</label>
-									</div>
-								</div>
-								<div class="panel panel-info">
-									<div class="panel-heading">Törzs stílus</div>
-									<div class="panel-body">
-										<label class="checkbox-inline">
-											<input type="checkbox" id="body-bold"> Félkövér
-										</label>
-										<label class="checkbox-inline">
-											<input type="checkbox" id="body-italic" aria-label="Header Italic"> Dőlt
-										</label>
-										<label class="checkbox-inline">
-											<input type="checkbox" id="body-underline" aria-label="Header Underline"> Aláhúzott
-										</label>          
-									</div>
-								</div>    
-						</form>
-					</div>
-					<div class="panel-footer">
-						<button onclick="transform()" class="btn btn-primary">Mehet</button>
-						<button onclick="reset()" class="btn btn-default">Visszaállítás</button>
-					</div>
+			<h1>Beállítás</h1>
+			<form id="setup">
+				<div class="form-group">
+					<label for="source">Excel-buffer változó neve</label>
+					<input type="text"
+						   class="form-control"
+						   placeholder="Add meg az Excel-buffer változó nevét."
+						   id="variable-name" required>
 				</div>
-			</div>
-			<div class="col-md-12">
-				<div class="panel panel-success">
-					<div class="panel-heading">Eredmény</div>
-					<div class="panel-body">
-						<div class="panel panel-info">
-							<div class="panel-heading">Fejléc</div>
-							<div class="panel-body">
-								<pre id="result-header"></pre>
-							</div>
-						</div>
-						<div class="panel panel-info">
-							<div class="panel-heading">Törzs</div>
-							<div class="panel-body">
-								<pre id="result-body"></pre></div>
+				<div class="form-group">
+					<label for="source">Exportálandó rekordváltozó neve</label>
+					<input type="text"
+						   class="form-control"
+						   placeholder="Add meg a rekordváltozó nevét, amiből kimenetet szeretnél készíteni."
+						   id="table-name" required>
+				</div>
+				<div class="form-group">
+					<label for="source">Forrás</label>
+					<textarea class="form-control"
+							  placeholder="Másold ide a mezők definícióit."
+							  rows="5"
+							  id="source"></textarea>
+						<p class="help-block">Az Object Designerben válaszd ki a táblát, nyisd meg a Design-felületet és a mezőlista bal felső sarkába kattintva jelöld ki az összes sort, majd használd a <kbd><kbd>Ctrl</kbd> + <kbd>c</kbd></kbd> billentyűkombinációt.</p>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" id="nav2013p" aria-label="NAV2013+"> NAV2013+
+					</label>
+					<p class="help-block">Pipáld be, ha NAV2013, vagy későbbi verzióban szeretnéd az eredményt használni.</p>
+				</div>
+					<div class="panel panel-info">
+						<div class="panel-heading">Fejléc stílus</div>
+						<div class="panel-body">
+							<label class="checkbox-inline">
+								<input type="checkbox" id="header-bold"> Félkövér
+							</label>
+							<label class="checkbox-inline">
+								<input type="checkbox" id="header-italic"> Dőlt
+							</label>
+							<label class="checkbox-inline">
+								<input type="checkbox" id="header-underline"> Aláhúzott
+							</label>
 						</div>
 					</div>
+					<div class="panel panel-info">
+						<div class="panel-heading">Törzs stílus</div>
+						<div class="panel-body">
+							<label class="checkbox-inline">
+								<input type="checkbox" id="body-bold"> Félkövér
+							</label>
+							<label class="checkbox-inline">
+								<input type="checkbox" id="body-italic" aria-label="Header Italic"> Dőlt
+							</label>
+							<label class="checkbox-inline">
+								<input type="checkbox" id="body-underline" aria-label="Header Underline"> Aláhúzott
+							</label>          
+						</div>
+					</div>    
+			</form>
+			<button onclick="transform()" class="btn btn-primary">Mehet</button>
+			<button onclick="reset()" class="btn btn-default">Visszaállítás</button>
+			<hr>
+			<h2>Eredmény</h2>
+			<div class="panel panel-info">
+				<div class="panel-heading">Fejléc</div>
+				<div class="panel-body">
+					<pre id="result-header"></pre>
 				</div>
+			</div>
+			<div class="panel panel-info">
+				<div class="panel-heading">Törzs</div>
+				<div class="panel-body">
+					<pre id="result-body"></pre></div>
 			</div>
 		</div>
 
