@@ -11,13 +11,13 @@
 	</head>
 
 	<body>
-		<div class="container-fluid">
+		<div class="container">
 			<div class="page-header">
 				<h1>
 					C/AL-forráskód generálás Excel-bufferhez <small>mező-definíciók alapján</small>
 				</h1>
 			</div>
-			<div class="col-md-4">
+			<div class="col-md-12">
 				<div class="panel panel-primary">
 					<div class="panel-heading">Beállítás</div>
 					<div class="panel-body">
@@ -86,7 +86,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="col-md-8">
+			<div class="col-md-12">
 				<div class="panel panel-success">
 					<div class="panel-heading">Eredmény</div>
 					<div class="panel-body">
@@ -129,14 +129,14 @@
 					var fields = lines[i].split('\t');
 
 					header += (i == 1 ? '' : '\n')
-						+ variableName
-						+'.AddColumn(\"'
+						+ '<var>' + variableName + '</var>'
+						+'.AddColumn(<var>\"'
 						+ tableName
-						+ '\".FIELDCAPTION(\"'
+						+ '\"</var>.FIELDCAPTION(\"'
 						+ (fields[2])
 						+ '\"), FALSE, \'\', ' + headerBold + ', '
 						+ headerItalic + ', ' + headerUnderline + ', \'\''
-						+ (isNew ? (', ' + variableName + '.\"Cell Type\"::Text);') : ');');
+						+ (isNew ? (', <var>' + variableName + '</var>.\"Cell Type\"::Text);') : ');');
 
 
 					var cellType;
@@ -159,15 +159,15 @@
 					}
 
 					body += (i == 1 ? '' : '\n')
-						+ variableName
-						+'.AddColumn(\"'
+						+ '<var>' + variableName + '</var>'
+						+'.AddColumn(<var>\"'
 						+ (fields[2])
-						+ '\", FALSE, \'\', ' + bodyBold + ', '
+						+ '\"</var>, FALSE, \'\', ' + bodyBold + ', '
 						+ bodyItalic + ', ' + bodyUnderline + ', \'\''
 						+ (isNew
-							? (', '
+							? (', <var>'
 								+ variableName
-								+ '.\"Cell Type\"::'
+								+ '</var>.\"Cell Type\"::'
 								+ cellType
 								+ ');')
 							: ');');
