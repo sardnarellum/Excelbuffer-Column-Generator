@@ -3,50 +3,48 @@
 	Müller András 2015.07.21.
 	Segédeszköz Excel-bufferes programkódok generálásához.
 -->
-<html>
+<html ng-app="excBufApp">
 	<head>
 		<meta charset="utf-8">
 		<title>Excel-buffer forráskód generálás</title>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	</head>
 
-	<body>
+	<body ng-controller="MainCtrl as ctrl">
 		<div class="container-fluid">
 			<div class="page-header">
-				<h1>
-					C/AL-forráskód generálás Excel-bufferhez <small>mező-definíciók alapján</small>
-				</h1>
+				<h1>C/AL-forráskód generálás Excel-bufferhez <small>mező-definíciók alapján</small></h1>
 			</div>
 			<div class="col-md-4">
 				<div class="panel panel-primary">
 					<div class="panel-heading">Beállítás</div>
 					<div class="panel-body">
-						<form id="setup">
+						<form id="setup" name="setupForm">
 							<div class="form-group">
-								<label for="source">Excel-buffer változó neve</label>
+								<label for="variable-name">Excel-buffer változó neve</label>
 								<input type="text"
 									   class="form-control"
 									   placeholder="Add meg az Excel-buffer változó nevét."
-									   id="variable-name" required>
+									   ng-model="ctrl.setup.variableName" id="variable-name" required>
 							</div>
 							<div class="form-group">
-								<label for="source">Exportálandó rekordváltozó neve</label>
+								<label for="table-name">Exportálandó rekordváltozó neve</label>
 								<input type="text"
 									   class="form-control"
 									   placeholder="Add meg a rekordváltozó nevét, amiből kimenetet szeretnél készíteni."
-									   id="table-name" required>
+									   ng-model="ctrl.setup.tableName" id="table-name" required>
 							</div>
 							<div class="form-group">
 								<label for="source">Forrás</label>
 								<textarea class="form-control"
 										  placeholder="Másold ide a mezők definícióit."
 										  rows="5"
-										  id="source"></textarea>
+										  ng-model="ctrl.setup.source" id="source" required></textarea>
 									<p class="help-block">Az Object Designerben válaszd ki a táblát, nyisd meg a Design-felületet és a mezőlista bal felső sarkába kattintva jelöld ki az összes sort, majd használd a <kbd><kbd>Ctrl</kbd> + <kbd>c</kbd></kbd> billentyűkombinációt.</p>
 							</div>
 							<div class="checkbox">
 								<label>
-									<input type="checkbox" id="nav2013p" aria-label="NAV2013+"> NAV2013+
+									<input id="nav2013p" type="checkbox" ng-model="ctrl.setup.nav2013p"> NAV2013+
 								</label>
 								<p class="help-block">Pipáld be, ha NAV2013, vagy későbbi verzióban szeretnéd az eredményt használni.</p>
 							</div>
@@ -54,13 +52,13 @@
 									<div class="panel-heading">Fejléc stílus</div>
 									<div class="panel-body">
 										<label class="checkbox-inline">
-											<input type="checkbox" id="header-bold"> Félkövér
+											<input type="checkbox" id="header-bold" ng-model="ctrl.setup.headerBold"> Félkövér
 										</label>
 										<label class="checkbox-inline">
-											<input type="checkbox" id="header-italic"> Dőlt
+											<input type="checkbox" id="header-italic" ng-model="ctrl.setup.headerItalic"> Dőlt
 										</label>
 										<label class="checkbox-inline">
-											<input type="checkbox" id="header-underline"> Aláhúzott
+											<input type="checkbox" id="header-underline" ng-model="ctrl.setup.headerUnderline"> Aláhúzott
 										</label>
 									</div>
 								</div>
@@ -68,21 +66,21 @@
 									<div class="panel-heading">Törzs stílus</div>
 									<div class="panel-body">
 										<label class="checkbox-inline">
-											<input type="checkbox" id="body-bold"> Félkövér
+											<input type="checkbox" id="body-bold" ng-model="ctrl.setup.bodyBold"> Félkövér
 										</label>
 										<label class="checkbox-inline">
-											<input type="checkbox" id="body-italic" aria-label="Header Italic"> Dőlt
+											<input type="checkbox" id="body-italic" ng-model="ctrl.setup.bodyItalic"> Dőlt
 										</label>
 										<label class="checkbox-inline">
-											<input type="checkbox" id="body-underline" aria-label="Header Underline"> Aláhúzott
+											<input type="checkbox" id="body-underline" ng-model="ctrl.setup.bodyUnderline"> Aláhúzott
 										</label>          
 									</div>
 								</div>    
 						</form>
 					</div>
 					<div class="panel-footer">
-						<button onclick="transform()" class="btn btn-primary">Mehet</button>
-						<button onclick="reset()" class="btn btn-default">Visszaállítás</button>
+						<button class="btn btn-primary" ng-click="ctrl.transform()" ng-disabled="setup.$invalid">Mehet</button>
+						<button class="btn btn-default" ng-click="ctrl.reset()">Visszaállítás</button>
 					</div>
 				</div>
 			</div>
@@ -93,11 +91,11 @@
 						<form id="results">
 							<div class="form-group">
 								<label for="result-header">Fejléc</label>
-								<textarea class="form-control" rows="13" id="result-header"></textarea>
+								<textarea id="result-header" class="form-control" rows="13" ng-bind="ctrl.resultHeader"></textarea>
 							</div>
 							<div class="form-group">
 								<label for="result-body">Törzs</label>
-								<textarea class="form-control" rows="13" id="result-body"></textarea>
+								<textarea id="result-body" class="form-control" rows="13" ng-bind="ctrl.resultBody"></textarea>
 							</div>
 						</form>
 					</div>
@@ -105,82 +103,93 @@
 			</div>
 		</div>
 
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
 		<script type="text/javascript">
 
-			function transform() {
-				var variableName = document.getElementById('variable-name').value;
-				var tableName = document.getElementById('table-name').value;
-				var lines = document.getElementById('source').value.split('\n');
+			angular.module('excBufApp', [])
+				.controller('MainCtrl', [function($scope) {
+					var self = this;
 
-				var isNew = document.getElementById('nav2013p').checked ? true : false;
+					$scope.setup = {
+						variableName : '',
+						tableName : '',
+						source : '',
+						headerBold : false,
+						headerItalic : false,
+						headerUnderline : false,
+						bodyBold : false,
+						bodyItalic : false,
+						bodyUnderline : false
+					};
 
-				var headerBold = document.getElementById('header-bold').checked ? 'TRUE' : 'FALSE';
-				var headerItalic = document.getElementById('header-italic').checked ? 'TRUE' : 'FALSE';
-				var headerUnderline = document.getElementById('header-underline').checked ? 'TRUE' : 'FALSE';
-				var bodyBold = document.getElementById('body-bold').checked ? 'TRUE' : 'FALSE';
-				var bodyItalic = document.getElementById('body-italic').checked ? 'TRUE' : 'FALSE';
-				var bodyUnderline = document.getElementById('body-underline').checked ? 'TRUE' : 'FALSE';
+					var oriSetup = angular.copy($scope.setup);
 
-				var header = document.getElementById('result-header');
-				var body = document.getElementById('result-body');
+					$scope.transform = function() {
+						var lines = setup.source.value.split('\n');
+						var isNew = self.setup.nav2013p ? true : false;
+						var headerBold = self.setup.headerBold ? 'TRUE' : 'FALSE';
+						var headerItalic = self.setup.headerItalic ? 'TRUE' : 'FALSE';
+						var headerUnderline = self.setup.headerUnderline ? 'TRUE' : 'FALSE';
+						var bodyBold = self.setup.bodyBold ? 'TRUE' : 'FALSE';
+						var bodyItalic = self.setup.bodyItalic ? 'TRUE' : 'FALSE';
+						var bodyUnderline = self.setup.bodyUnderline ? 'TRUE' : 'FALSE';
 
-				header.value = '';
-				body.value = '';
+						self.resultHeader = "";
+						self.resultBody = "";
 
-				for (var i = 1; i < lines.length; i++) {
-					var fields = lines[i].split('\t');
+						for (var i = 1; i < lines.length; i++) {
+							var fields = lines[i].split('\t');
 
-					header.value += (i == 1 ? '' : '\n')
-						+ variableName
-						+'.AddColumn(\"'
-						+ tableName
-						+ '\".FIELDCAPTION(\"'
-						+ (fields[2])
-						+ '\"), FALSE, \'\', ' + headerBold + ', '
-						+ headerItalic + ', ' + headerUnderline + ', \'\''
-						+ (isNew ? (', ' + variableName + '.\"Cell Type\"::Text);') : ');');
+							self.resultHeader += (i == 1 ? '' : '\n')
+								+ self.setup.variableName
+								+'.AddColumn(\"'
+								+ self.setup.tableName
+								+ '\".FIELDCAPTION(\"'
+								+ (fields[2])
+								+ '\"), FALSE, \'\', ' + headerBold + ', '
+								+ headerItalic + ', ' + headerUnderline + ', \'\''
+								+ (isNew ? (', ' + self.setup.variableName + '.\"Cell Type\"::Text);') : ');');
+								
+							var cellType;
 
+							switch (fields[3]) {
+								case 'Integer':
+								case 'BigInteger':
+								case 'Decimal':
+									cellType = 'Number';
+									break;
+								case 'Date':
+									cellType = 'Date';
+									break;
+								case 'Time':
+								case 'DateTime':
+									cellType = 'Time';
+									break;
+								default:
+									cellType = 'Text';
+							}
 
-					var cellType;
+							self.resultBody += (i == 1 ? '' : '\n')
+								+ self.setup.variableName
+								+'.AddColumn(\"'
+								+ (fields[2])
+								+ '\", FALSE, \'\', ' + bodyBold + ', '
+								+ bodyItalic + ', ' + bodyUnderline + ', \'\''
+								+ (isNew
+									? (', '
+										+ self.setup.variableName
+										+ '.\"Cell Type\"::'
+										+ cellType
+										+ ');')
+									: ');');
+						}
+					};
 
-					switch (fields[3]) {
-						case 'Integer':
-						case 'BigInteger':
-						case 'Decimal':
-							cellType = 'Number';
-							break;
-						case 'Date':
-							cellType = 'Date';
-							break;
-						case 'Time':
-						case 'DateTime':
-							cellType = 'Time';
-							break;
-						default:
-							cellType = 'Text';
-					}
-
-					body.value += (i == 1 ? '' : '\n')
-						+ variableName
-						+'.AddColumn(\"'
-						+ (fields[2])
-						+ '\", FALSE, \'\', ' + bodyBold + ', '
-						+ bodyItalic + ', ' + bodyUnderline + ', \'\''
-						+ (isNew
-							? (', '
-								+ variableName
-								+ '.\"Cell Type\"::'
-								+ cellType
-								+ ');')
-							: ');');
-				}
-			}
-
-			function reset() {
-				document.getElementById('setup').reset();
-				document.getElementById('results').reset();
-			}
+					$scope.reset = function() {
+						$scope.setup = angular.copy(oriSetup);
+						$scope.setupForm.$setPristine();
+					};
+				}]);
 
 		</script>
 
