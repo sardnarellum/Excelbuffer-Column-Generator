@@ -90,22 +90,22 @@
 				<div class="panel panel-success">
 					<div class="panel-heading">Eredmény</div>
 					<div class="panel-body">
-						<form id="results">
-							<div class="form-group">
-								<label for="result-header">Fejléc</label>
-								<textarea class="form-control" rows="13" id="result-header"></textarea>
+						<div class="panel panel-info">
+							<div class="panel-heading">Fejléc</div>
+							<div class="panel-body">
+								<pre id="result-header"></pre>
 							</div>
-							<div class="form-group">
-								<label for="result-body">Törzs</label>
-								<textarea class="form-control" rows="13" id="result-body"></textarea>
-							</div>
-						</form>
+						</div>
+						<div class="panel panel-info">
+							<div class="panel-heading">Törzs</div>
+							<div class="panel-body">
+								<pre id="result-body"></pre></div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 		<script type="text/javascript">
 
 			function transform() {
@@ -122,16 +122,13 @@
 				var bodyItalic = document.getElementById('body-italic').checked ? 'TRUE' : 'FALSE';
 				var bodyUnderline = document.getElementById('body-underline').checked ? 'TRUE' : 'FALSE';
 
-				var header = document.getElementById('result-header');
-				var body = document.getElementById('result-body');
-
-				header.value = '';
-				body.value = '';
+				var header = '';
+				var body = '';
 
 				for (var i = 1; i < lines.length; i++) {
 					var fields = lines[i].split('\t');
 
-					header.value += (i == 1 ? '' : '\n')
+					header += (i == 1 ? '' : '\n')
 						+ variableName
 						+'.AddColumn(\"'
 						+ tableName
@@ -161,7 +158,7 @@
 							cellType = 'Text';
 					}
 
-					body.value += (i == 1 ? '' : '\n')
+					body += (i == 1 ? '' : '\n')
 						+ variableName
 						+'.AddColumn(\"'
 						+ (fields[2])
@@ -175,6 +172,9 @@
 								+ ');')
 							: ');');
 				}
+
+				document.getElementById('result-header').innerHTML = header;
+				document.getElementById('result-body').innerHTML = body;
 			}
 
 			function reset() {
